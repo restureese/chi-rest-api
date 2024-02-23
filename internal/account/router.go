@@ -3,7 +3,7 @@ package account
 import (
 	"encoding/json"
 	"github.com/go-chi/chi/v5"
-	"main/pkg/utils"
+	"main/utils"
 	"net/http"
 )
 

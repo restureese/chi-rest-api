@@ -2,7 +2,7 @@ package account
 
 import (
 	"context"
-	"main/pkg/utils"
+	"main/utils"
 )
 
 func createItem(ctx context.Context, username string, password string) (account AccountItem, err error) {

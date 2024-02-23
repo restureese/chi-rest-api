@@ -5,7 +5,9 @@ import (
 )
 
 type ConfigurationEnvironment struct {
-	DbUri string `mapstructure:"DB_URI"`
+	DbUri       string `mapstructure:"DB_URI"`
+	JwtSecret   string `mapstructure:"JWT_SECRET"`
+	JwtDuration int    `mapstructure:"JWT_DURATION"`
 }
 
 func LoadConfig(path string) (configuration ConfigurationEnvironment, err error) {

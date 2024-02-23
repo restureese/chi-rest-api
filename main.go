@@ -2,12 +2,14 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/rs/zerolog/log"
 	"main/configs"
 	"main/internal/account"
+	"main/utils"
 	"net/http"
 	"net/http/pprof"
 )
@@ -15,6 +17,9 @@ import (
 func main() {
 	configs.LoadConfig(".")
 	ctx := context.Background()
+	data := map[string]interface{}{"identity": "restu"}
+	token := utils.GenerateJWT(data)
+	fmt.Println(token)
 
 	pool, err := pgxpool.NewWithConfig(ctx, configs.PgConfig())
 
