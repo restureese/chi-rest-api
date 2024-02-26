@@ -2,13 +2,15 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/go-chi/jwtauth/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/rs/zerolog/log"
 	"main/configs"
 	"main/internal/account"
+	"main/internal/auth"
+	"main/middlewares"
 	"main/utils"
 	"net/http"
 	"net/http/pprof"
@@ -17,9 +19,6 @@ import (
 func main() {
 	configs.LoadConfig(".")
 	ctx := context.Background()
-	data := map[string]interface{}{"identity": "restu"}
-	token := utils.GenerateJWT(data)
-	fmt.Println(token)
 
 	pool, err := pgxpool.NewWithConfig(ctx, configs.PgConfig())
 
@@ -28,6 +27,7 @@ func main() {
 	}
 
 	account.SetPool(pool)
+	auth.SetPool(pool)
 
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
@@ -35,7 +35,22 @@ func main() {
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("Hello World!"))
 	})
-	r.HandleFunc("/pprof/profile", pprof.Profile)
-	r.Mount("/account", account.Router())
+	r.Group(func(r chi.Router) {
+		r.Mount("/auth", auth.Router())
+	})
+
+	r.Group(func(r chi.Router) {
+		//r.Mount("/", utils.RegisterAuth())
+		r.Use(jwtauth.Verifier(utils.TokenAuth))
+
+		// Handle valid / invalid tokens. In this example, we use
+		// the provided authenticator middleware, but you can write your
+		// own very easily, look at the Authenticator method in jwtauth.go
+		// and tweak it, its not scary.
+		r.Use(middlewares.Authenticator(utils.TokenAuth))
+		r.HandleFunc("/pprof/profile", pprof.Profile)
+		r.Mount("/account", account.Router())
+	})
+
 	http.ListenAndServe("0.0.0.0:8000", r)
 }
