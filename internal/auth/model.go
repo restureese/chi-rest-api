@@ -7,8 +7,8 @@ import (
 )
 
 type LoginItem struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
+	Username string `json:"username" validate:"required"`
+	Password string `json:"password" validate:"required"`
 }
 
 type AccountItem struct {
@@ -18,17 +18,4 @@ type AccountItem struct {
 	CreatedAt time.Time
 	UpdatedAt null.Time
 	DeletedAt null.Time
-}
-
-func NewLoginItem(username string, password string) (LoginItem, error) {
-	if err := validateTitle(username); err != nil {
-		return LoginItem{}, err
-	}
-
-	item := LoginItem{
-		Username: username,
-		Password: password,
-	}
-
-	return item, nil
 }

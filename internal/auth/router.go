@@ -15,6 +15,17 @@ func Router() *chi.Mux {
 	return r
 }
 
+// loginHandler - Returns all the available APIs
+// @Summary Login
+// @Description login account.
+// @Tags Auth
+// @Accept  json
+// @Produce  json
+//
+//	@Param account	body LoginItem true "Login"
+//
+// @Success 200 {object} utils.Response
+// @Router /auth/login [post]
 func loginHandler(w http.ResponseWriter, req *http.Request) {
 	var account LoginItem
 	err := json.NewDecoder(req.Body).Decode(&account)
@@ -27,13 +38,13 @@ func loginHandler(w http.ResponseWriter, req *http.Request) {
 
 	item, err := findItem(ctx, account.Username)
 	if err != nil {
-		utils.WriteError(w, http.StatusBadRequest, err)
+		utils.WriteError(w, http.StatusUnauthorized, err)
 		return
 	}
 
 	err = utils.VerifyPassword(item.Password, account.Password)
 	if err != nil {
-		utils.WriteError(w, http.StatusBadRequest, ErrANotAuthenticated)
+		utils.WriteError(w, http.StatusUnauthorized, ErrANotAuthenticated)
 		return
 	}
 

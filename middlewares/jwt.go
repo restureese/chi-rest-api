@@ -22,13 +22,12 @@ func Authenticator(ja *jwtauth.JWTAuth) func(http.Handler) http.Handler {
 			token, _, err := jwtauth.FromContext(r.Context())
 
 			if err != nil {
-				//http.Error(w, err.Error(), http.StatusUnauthorized)
 				utils.WriteError(w, http.StatusUnauthorized, ErrUnauthorized)
 				return
 			}
 
 			if token == nil {
-				http.Error(w, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
+				utils.WriteError(w, http.StatusUnauthorized, ErrUnauthorized)
 				return
 			}
 

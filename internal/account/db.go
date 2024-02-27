@@ -7,7 +7,9 @@ import (
 )
 
 var (
-	pool *pgxpool.Pool
+	pool               *pgxpool.Pool
+	ErrAccountNotFound = errors.New("account not found")
+	ErrIsDeleted       = errors.New("account not found")
 )
 
 func SetPool(newPool *pgxpool.Pool) error {

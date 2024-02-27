@@ -11,6 +11,12 @@ type Response struct {
 	Message string      `json:"message"`
 }
 
+type JSONResult struct {
+	Code    int      `json:"code" example:"200"`
+	Message string   `json:"message"`
+	Data    struct{} `json:"data"`
+}
+
 func writeMessage(data interface{}, w http.ResponseWriter, status int, msg string) {
 
 	w.Header().Add("content-type", "application/json")

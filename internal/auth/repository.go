@@ -1,5 +1,3 @@
-//go:build !fake
-
 package auth
 
 import (
