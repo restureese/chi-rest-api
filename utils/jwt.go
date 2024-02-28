@@ -1,7 +1,6 @@
 package utils
 
 import (
-	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/jwtauth/v5"
 	"github.com/rs/zerolog/log"
 	"main/configs"
@@ -17,11 +16,4 @@ func GenerateJWT(data map[string]interface{}) string {
 		log.Error().Err(err).Msg("failed encode jwt")
 	}
 	return token
-}
-
-func RegisterAuth() *chi.Mux {
-	r := chi.NewRouter()
-	r.Use(jwtauth.Verifier(TokenAuth))
-	r.Use(jwtauth.Authenticator(TokenAuth))
-	return r
 }

@@ -3,17 +3,13 @@ package middlewares
 import (
 	"errors"
 	"github.com/go-chi/jwtauth/v5"
+	"github.com/lestrrat-go/jwx/v2/jwt"
 	"main/utils"
 	"net/http"
 )
 
 var (
-	ErrUnauthorized = errors.New("Unauthorized")
-	ErrExpired      = errors.New("token is expired")
-	ErrNBFInvalid   = errors.New("token nbf validation failed")
-	ErrIATInvalid   = errors.New("token iat validation failed")
-	ErrNoTokenFound = errors.New("no token found")
-	ErrAlgoInvalid  = errors.New("algorithm mismatch")
+	ErrUnauthorized = errors.New("unauthorized")
 )
 
 func Authenticator(ja *jwtauth.JWTAuth) func(http.Handler) http.Handler {
@@ -28,6 +24,10 @@ func Authenticator(ja *jwtauth.JWTAuth) func(http.Handler) http.Handler {
 
 			if token == nil {
 				utils.WriteError(w, http.StatusUnauthorized, ErrUnauthorized)
+				return
+			}
+			if token == nil || jwt.Validate(token) != nil {
+				http.Error(w, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
 				return
 			}
 
