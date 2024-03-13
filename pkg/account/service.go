@@ -2,7 +2,6 @@ package account
 
 import (
 	"context"
-	"fmt"
 	"github.com/oklog/ulid/v2"
 	"main/utils"
 )
@@ -125,7 +124,7 @@ func makeItemDelete(ctx context.Context, id ulid.ULID) error {
 	}
 
 	err = item.DeleteItem()
-	fmt.Println(err)
+
 	if err != nil {
 		tx.Rollback(ctx)
 		return err

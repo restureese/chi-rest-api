@@ -2,16 +2,11 @@ package main
 
 import (
 	"context"
-	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/chi/v5/middleware"
-	"github.com/go-chi/cors"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/rs/zerolog/log"
-	httpSwagger "github.com/swaggo/http-swagger/v2"
+	"main/cmd"
 	"main/configs"
 	_ "main/docs"
-	"main/pkg/account"
-	"main/pkg/auth"
 	"net/http"
 )
 
@@ -42,38 +37,7 @@ func main() {
 	if err != nil {
 		log.Error().Err(err).Msg("unable to connect to database")
 	}
-
-	account.SetPool(pool)
-	auth.SetPool(pool)
-
-	r := chi.NewRouter()
-	r.Use(middleware.Logger)
-	r.Use(cors.Handler(cors.Options{
-		// AllowedOrigins:   []string{"https://foo.com"}, // Use this to allow specific origin hosts
-		AllowedOrigins: []string{"https://*", "http://*"},
-		// AllowOriginFunc:  func(r *http.Request, origin string) bool { return true },
-		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
-		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
-		ExposedHeaders:   []string{"Link"},
-		AllowCredentials: false,
-		MaxAge:           300, // Maximum value not ignored by any of major browsers
-	}))
-
-	r.Mount("/debug", middleware.Profiler())
-	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("Hello World!"))
-	})
-
-	r.Get("/docs/*", httpSwagger.Handler(
-		httpSwagger.URL("http://0.0.0.0:8000/docs/doc.json"),
-	))
-
-	//r
-
-	r.Group(func(r chi.Router) {
-		r.Mount("/auth", auth.Router())
-		r.Mount("/accounts", account.Router())
-	})
+	r := cmd.NewApplication(pool)
 
 	http.ListenAndServe("0.0.0.0:8000", r)
 }
