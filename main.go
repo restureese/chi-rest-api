@@ -10,8 +10,8 @@ import (
 	httpSwagger "github.com/swaggo/http-swagger/v2"
 	"main/configs"
 	_ "main/docs"
-	"main/internal/account"
-	"main/internal/auth"
+	"main/pkg/account"
+	"main/pkg/auth"
 	"net/http"
 )
 
