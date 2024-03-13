@@ -19,9 +19,10 @@ export const options = {
 
 export default () => {
   const payload = JSON.stringify({
-    title: 'string',
+    username: 'string11',
+    password: 'string11111'
   });
   const headers = { 'Content-Type': 'application/json' };
-  const res = http.post(base_url + '/heroes', payload, { headers });
+  const res = http.post(base_url + '/accounts', payload, { headers });
   check(res, { 'status was 200': (r) => r.status == 200 });
 };
