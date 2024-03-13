@@ -10,7 +10,7 @@ RUN go build -o /app main.go
 
 FROM alpine:3.19.1
 
-WORKDIR /application
+WORKDIR /
 
 COPY --from=builder /app /app
 
